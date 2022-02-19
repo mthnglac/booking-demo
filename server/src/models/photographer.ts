@@ -1,17 +1,21 @@
-import { IPhotographer } from '../types/photographer'
-import { model, Schema } from 'mongoose'
+import { IPhotographer } from "../types/photographer";
+import { model, Schema } from "mongoose";
 
 const Photographer: Schema = new Schema({
   name: String,
-  availabilities: [{
-    starts: Date,
-    ends: Date,
-    _id: false,
-  }],
-  bookings: [{
-    starts: Date,
-    ends: Date,
-  }],
-})
+  availabilities: [
+    {
+      starts: Date,
+      ends: Date,
+      _id: false,
+    },
+  ],
+  bookings: [
+    {
+      starts: Date,
+      ends: Date,
+    },
+  ],
+});
 
-export default model<IPhotographer>("photographers", Photographer)
+export default model<IPhotographer>("photographers", Photographer);

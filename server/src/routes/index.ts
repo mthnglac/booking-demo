@@ -1,16 +1,18 @@
-import { Router } from 'express'
+import { Router } from "express";
 import {
   getPhotographers,
+  getAvailablePhotographers,
   createPhotographer,
   patchPhotographer,
   deletePhotographer,
-} from '../controllers/photographer'
+} from "../controllers/photographer";
 
-const router: Router = Router()
+const router: Router = Router();
 
-router.get('/photographers', getPhotographers)
-router.post('/photographers', createPhotographer)
-router.patch('/photographers/:id', patchPhotographer)
-router.delete('/photographers/:id', deletePhotographer)
+router.get("/photographers", getPhotographers);
+router.get("/available-photographers", getAvailablePhotographers);
+router.post("/photographers", createPhotographer);
+router.patch("/photographers/:id", patchPhotographer);
+router.delete("/photographers/:id", deletePhotographer);
 
-export default router
+export default router;

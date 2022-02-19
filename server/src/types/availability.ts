@@ -1,4 +1,4 @@
 export interface IAvailability {
-  starts: Date
-  ends: Date
+  starts: string;
+  ends: string;
 }

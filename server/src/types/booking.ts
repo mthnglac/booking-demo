@@ -1,4 +1,4 @@
 export interface IBooking {
-  starts: Date
-  ends: Date
+  starts: string;
+  ends: string;
 }
