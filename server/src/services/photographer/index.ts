@@ -38,7 +38,7 @@ const photographerService = {
   ): Promise<IPhotographer | null> => {
     try {
       const photographer: IPhotographer | null =
-        await Photographer.findByIdAndUpdate({ _id: id }, body);
+        await Photographer.findByIdAndUpdate({ _id: id }, body, { new: true });
 
       return photographer;
     } catch (error) {
