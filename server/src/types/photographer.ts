@@ -1,9 +1,9 @@
 import { Document } from 'mongoose'
 import { IBooking } from './booking'
-import { IActivity } from './activity'
+import { IAvailability } from './availability'
 
 export interface IPhotographer extends Document {
   name: string
-  activities: IActivity[]
+  availabilities: IAvailability[]
   bookings: IBooking[]
 }
