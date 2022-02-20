@@ -47,7 +47,11 @@ const patchPhotographer = async (
     req.body
   );
 
-  res.status(200).send({ message: "Photographer updated.", photographer });
+  if (!photographer) {
+    res.status(404).send({ message: "Photographer not found." });
+  } else {
+    res.status(200).send({ message: "Photographer updated.", photographer });
+  }
 };
 
 const deletePhotographer = async (
