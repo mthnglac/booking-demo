@@ -1,6 +1,6 @@
 import { photographerService } from '../services/photographer'
 
-export default async function initialSeeder() {
+export default async function initialSeeder(): Promise<void> {
   const data = await photographerService.get()
   if (data.length !== 0) {
     // Data exists, no need to seed.

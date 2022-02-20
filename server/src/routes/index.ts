@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   getPhotographers,
-  getAvailablePhotographers,
+  getAvailablePhotographersByDuration,
   createPhotographer,
   patchPhotographer,
   deletePhotographer,
@@ -10,7 +10,7 @@ import {
 const router: Router = Router();
 
 router.get("/photographers", getPhotographers);
-router.get("/available-photographers", getAvailablePhotographers);
+router.get("/available-photographers", getAvailablePhotographersByDuration);
 router.post("/photographers", createPhotographer);
 router.patch("/photographers/:id", patchPhotographer);
 router.delete("/photographers/:id", deletePhotographer);

@@ -1,10 +1,23 @@
 import { Response, Request } from "express";
-import { IPhotographer } from "../../types/photographer";
+import {
+  IPhotographer,
+  IPhotographerBookingResponse,
+} from "../../types/photographer";
 import { photographerService } from "../../services/photographer";
 
 const getPhotographers = async (req: Request, res: Response): Promise<void> => {
-  const photographers: IPhotographer[]  = await photographerService.get();
+  const photographers: IPhotographer[] = await photographerService.get();
   res.status(200).send(photographers);
+};
+
+const getAvailablePhotographersByDuration = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const durationInMinutes = req.query.duration as unknown as number;
+  const availablePhotographersWithTimeSlot: IPhotographerBookingResponse[] =
+    await photographerService.getAvailablesByDuration(durationInMinutes);
+  res.status(200).send(availablePhotographersWithTimeSlot);
 };
 
 const createPhotographer = async (
@@ -54,6 +67,7 @@ const deletePhotographer = async (
 
 export {
   getPhotographers,
+  getAvailablePhotographersByDuration,
   createPhotographer,
   patchPhotographer,
   deletePhotographer,
