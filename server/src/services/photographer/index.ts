@@ -5,7 +5,6 @@ import {
 } from "../../types/photographer";
 import { IAvailability } from "../../types/availability";
 import { IBooking } from "../../types/booking";
-import { ITimeSlot } from "../../types/timeslot";
 import { dateDiffInMinutesBetweenTwoDate } from '../../helpers/date-differ'
 
 const photographerService = {
@@ -33,20 +32,19 @@ const photographerService = {
         },
       });
 
-      // pushing earliest timeslots to the booking response
+      // pushing earliest acceptable availabilities to the response
       availablePhotographers.map((availablePhotographer) => {
-        const timeSlots: ITimeSlot[] = [];
+        const acceptableAvailabilities: IAvailability[] = [];
 
         availablePhotographer.availabilities.map((availability) => {
-          // calculate time period of availability in minutes
           const dateDiffForAvailability = dateDiffInMinutesBetweenTwoDate(
             availability.starts,
             availability.ends,
           )
-          // if there is any time period bigger than duration
-          // push it to the timeSlots
+          // if there is any time period >= than duration
+          // push it to the acceptableAvailabilities
           if (dateDiffForAvailability >= durationInMinutes) {
-            timeSlots.push({
+            acceptableAvailabilities.push({
               starts: availability.starts,
               ends: availability.ends,
             });
@@ -54,7 +52,7 @@ const photographerService = {
         });
 
         // We can not start reducing with empty array
-        if (timeSlots.length) {
+        if (acceptableAvailabilities.length) {
           reservedPhotographersWithTimeSlot.push({
             photographer: {
               id: availablePhotographer._id,
@@ -62,92 +60,75 @@ const photographerService = {
             },
           });
 
-          // shaving timeSlots with bookings
+          // shaving acceptableAvailabilities with bookings
           if (availablePhotographer.bookings.length) {
             availablePhotographer.bookings.map((booking) => {
               const startsOfBooking = new Date(booking.starts).getTime()
               const endsOfBooking = new Date(booking.ends).getTime()
 
-              timeSlots.map((timeSlot, timeSlotIndex) => {
-                const startsOfTimeSlot = new Date(timeSlot.starts).getTime()
-                const endsOfTimeSlot = new Date(timeSlot.ends).getTime()
+              acceptableAvailabilities.map((acceptableAvailability, acceptableAvailabilityIndex) => {
+                const startsOfAcceptableAvailability = new Date(acceptableAvailability.starts).getTime()
+                const endsOfAcceptableAvailability = new Date(acceptableAvailability.ends).getTime()
 
-                //const dateDiff = Math.abs(
-                  //new Date(timeSlot.starts).valueOf() - new Date(booking.starts).valueOf()
-                //);
-                //const dateDiffInMinutes = Math.floor(dateDiff / 1000 / 60);
-
-                //// if booking starts after the time slot but more time elapsed than duration
-                //// availability should end at start of existing booking
-                //if (startsOfBooking >= startsOfTimeSlot && dateDiffInMinutes >= durationInMinutes) {
-                  //timeSlot.ends = startsOfBooking.toString()
-                //} else {
-                  //// if booking starts after the time slot but more time has not elapsed than duration
-                  //// availability should start at end of existing booking
-                  //timeSlot.starts = endsOfBooking.toString()
-                //}
-
-
-
-                // if booking covers all the availability, remove the availability from timeSlots.
-                if (startsOfBooking === startsOfTimeSlot && endsOfBooking === endsOfTimeSlot) {
-                  timeSlots.splice(timeSlotIndex, 1)
+                // if booking covers all the availability, remove the availability from acceptableAvailabilities.
+                if (startsOfBooking === startsOfAcceptableAvailability && endsOfBooking === endsOfAcceptableAvailability) {
+                  acceptableAvailabilities.splice(acceptableAvailabilityIndex, 1)
                 }
 
                 // if booking starts at the beginning of the availability
-                if (startsOfBooking === startsOfTimeSlot && endsOfBooking !== endsOfTimeSlot) {
-                  timeSlot.starts = booking.ends
+                if (startsOfBooking === startsOfAcceptableAvailability && endsOfBooking !== endsOfAcceptableAvailability) {
+                  acceptableAvailability.starts = booking.ends
 
                   // if rest of availability < than duration, just remove it.
                   const dateDiff = dateDiffInMinutesBetweenTwoDate(
-                    timeSlot.starts,
-                    timeSlot.ends
+                    acceptableAvailability.starts,
+                    acceptableAvailability.ends
                   )
                   if (dateDiff < durationInMinutes) {
-                    timeSlots.splice(timeSlotIndex, 1)
+                    acceptableAvailabilities.splice(acceptableAvailabilityIndex, 1)
                   }
                 }
 
                 // if booking ends at the ending of the availability
-                if (startsOfBooking === startsOfTimeSlot && endsOfBooking !== endsOfTimeSlot) {
-                  timeSlot.ends = booking.starts
+                if (startsOfBooking === startsOfAcceptableAvailability && endsOfBooking !== endsOfAcceptableAvailability) {
+                  acceptableAvailability.ends = booking.starts
 
                   // if rest of availability < than duration, just remove it.
                   const dateDiff = dateDiffInMinutesBetweenTwoDate(
-                    timeSlot.starts,
-                    timeSlot.ends
+                    acceptableAvailability.starts,
+                    acceptableAvailability.ends
                   )
                   if (dateDiff < durationInMinutes) {
-                    timeSlots.splice(timeSlotIndex, 1)
+                    acceptableAvailabilities.splice(acceptableAvailabilityIndex, 1)
                   }
                 }
 
                 // if booking is at the somewhere in the availability, split the availability
-                if (startsOfBooking > startsOfTimeSlot && endsOfBooking < endsOfTimeSlot) {
-                  const newTimeSlot = { starts: timeSlot.starts, ends: timeSlot.ends }
-                  timeSlot.ends = booking.starts
-                  newTimeSlot.starts = booking.ends
+                if (startsOfBooking > startsOfAcceptableAvailability && endsOfBooking < endsOfAcceptableAvailability) {
+                  const newAcceptableAvailability = { starts: acceptableAvailability.starts, ends: acceptableAvailability.ends }
+                  acceptableAvailability.ends = booking.starts
+                  newAcceptableAvailability.starts = booking.ends
 
                   // if first availability < than duration, just remove it.
                   const dateDiffForFirst = dateDiffInMinutesBetweenTwoDate(
-                    timeSlot.starts,
-                    timeSlot.ends
+                    acceptableAvailability.starts,
+                    acceptableAvailability.ends
                   )
                   if (dateDiffForFirst < durationInMinutes) {
-                    timeSlots.splice(timeSlotIndex, 1)
+                    acceptableAvailabilities.splice(acceptableAvailabilityIndex, 1)
                   }
 
                   // if second availability < than duration, just remove it.
                   const dateDiffForSecond = dateDiffInMinutesBetweenTwoDate(
-                    newTimeSlot.starts,
-                    newTimeSlot.ends
+                    newAcceptableAvailability.starts,
+                    newAcceptableAvailability.ends
                   )
                   if (dateDiffForSecond < durationInMinutes) {
-                    timeSlots.splice(timeSlotIndex, 1)
+                    acceptableAvailabilities.splice(acceptableAvailabilityIndex, 1)
                   } else {
-                    timeSlots.push({
-                      starts: newTimeSlot.starts,
-                      ends: newTimeSlot.ends,
+                    acceptableAvailabilities.push({
+                      starts: newAcceptableAvailability.starts,
+                      ends: newAcceptableAvailability.ends,
                     })
                   }
                 }
@@ -155,9 +136,9 @@ const photographerService = {
             })
           }
 
-          // find earliest time slot inside the timeSlots
-          const earlierTimeSlot = timeSlots.reduce((earlierTimeSlot, item) =>
-            item.starts < earlierTimeSlot.starts ? item : earlierTimeSlot
+          // find earliest time period inside the acceptableAvailabilities
+          const earlierAcceptableAvailability = acceptableAvailabilities.reduce((earlierAcceptableAvailability, item) =>
+            item.starts < earlierAcceptableAvailability.starts ? item : earlierAcceptableAvailability
           );
 
           // find photographer index inside the reservedPhotographersWithTimeSlot
@@ -167,14 +148,14 @@ const photographerService = {
                 photographer.name === availablePhotographer.name
             );
 
-          // add timeSlot to the reserved photographer
+          // add acceptableAvailability to the reserved photographer
           Object.assign(
             reservedPhotographersWithTimeSlot[reservedPhotographerIndex],
             {
               timeSlot: {
-                starts: earlierTimeSlot.starts,
+                starts: earlierAcceptableAvailability.starts,
                 ends: new Date(
-                  new Date(earlierTimeSlot.starts).getTime() +
+                  new Date(earlierAcceptableAvailability.starts).getTime() +
                     durationInMinutes * 60000
                 ),
               },
