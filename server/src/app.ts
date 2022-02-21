@@ -20,3 +20,7 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+export {
+  app
+}
