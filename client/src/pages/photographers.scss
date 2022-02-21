@@ -1,0 +1,60 @@
+.Photographers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #282c34;
+  min-height: 100vh;
+}
+
+.Photographers-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: black;
+  font-size: calc(10px + 2vmin);
+  border-radius: 15px;
+  min-width: 80%;
+
+  .Card-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 5%;
+
+    ul {
+      margin-top: 0;
+      margin-bottom: 40px;
+    }
+
+    .Duration-container {
+      display: flex;
+      align-items: center;
+
+      form {
+        display: flex;
+        align-items: center;
+
+        select {
+          margin-left: 20px;
+        }
+      }
+
+      small {
+        margin-left: 20px;
+        font-size: 15px;
+      }
+    }
+  }
+}
+
+
+.App-link {
+  color: #61dafb;
+  margin-top: 50px;
+}
+
+td, th {
+  text-align: left;
+  padding: 10px 20px;
+}

@@ -7,10 +7,10 @@ export default function Home () {
     <div className="App">
       <div className="App-card">
         <div className="Card-content">
-          <p>Home Page</p>
+          <p>Booking Demo App</p>
 
           <Link to="/photographers" className="App-link">
-            Go to the photographers page
+            Available photographers
           </Link>
         </div>
       </div>
