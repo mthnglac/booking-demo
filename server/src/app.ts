@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import cors from "cors";
-import photographerRoutes from "./routes";
+import photographerRoutes from "./routes/photographers";
 import initialSeeder from "./db/seeds";
 import { db } from "./db";
 
@@ -9,7 +9,7 @@ const PORT: string | number = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
-app.use(photographerRoutes);
+app.use('/api', photographerRoutes)
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
@@ -21,6 +21,4 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-export {
-  app
-}
+export default app

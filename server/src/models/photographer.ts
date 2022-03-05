@@ -18,4 +18,4 @@ const Photographer: Schema = new Schema({
   ],
 });
 
-export default model<IPhotographer>("photographers", Photographer);
+export default model<IPhotographer>("Photographer", Photographer);

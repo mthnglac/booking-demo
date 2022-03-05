@@ -2,12 +2,13 @@ import Photographer from "../../models/photographer";
 import {
   IPhotographer,
   IPhotographerBookingResponse,
+  IPhotographerService,
 } from "../../types/photographer";
 import { IAvailability } from "../../types/availability";
 import { IBooking } from "../../types/booking";
 import { dateDiffInMinutesBetweenTwoDate } from '../../helpers/date-differ'
 
-const photographerService = {
+const photographerService: IPhotographerService = {
   get: async (): Promise<IPhotographer[]> => {
     const photographers: IPhotographer[] = await Photographer.find();
     return photographers;
@@ -195,4 +196,4 @@ const photographerService = {
   },
 };
 
-export { photographerService };
+export default photographerService;

@@ -1,4 +1,4 @@
-import { photographerService } from '../services/photographer'
+import photographerService from '../services/photographer'
 
 export default async function initialSeeder(): Promise<void> {
   const data = await photographerService.get()

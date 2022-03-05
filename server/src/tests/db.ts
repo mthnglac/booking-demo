@@ -19,7 +19,7 @@ const connect = async () => {
   mongoServer = await MongoMemoryServer.create();
 
   const mongoUri = await mongoServer.getUri();
-  await mongoose.connect(mongoUri, opts, err => {
+  mongoose.connect(mongoUri, opts, err => {
     if (err) {
       console.error(err);
     }
@@ -37,7 +37,7 @@ const clear = async () => {
   const collections = mongoose.connection.collections;
 
   for (const key in collections) {
-    await collections[key].deleteMany();
+    await collections[key].deleteMany({});
   }
 };
 
